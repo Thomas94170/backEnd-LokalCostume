@@ -1,0 +1,40 @@
+npm init 
+
+installer toutes les dépendances nécessaires:
+npm i express
+npm i dotenv
+npm i mongoose
+npm i nodemon
+
+ajouter dans le script
+"server": "nodemon ./backend/server.js"
+lorsque je ferais npm server, cela fera tourner le serveur
+
+Installation terminée
+
+Faire le serveur
+à la racine du projet, dossier backend -> fichier server.js
+voir fichier
+
+ouvrir postman et testé si cela fonctionne avec l adresse
+en get  : http://localhost:5500/costume
+le message est bien affiché
+
+faire un dossier routes ->fichier costume.routes.js
+voir fichier
+
+faire la bdd avec mongo DB
+
+dans mon cas reprendre l'adresse de connexion prealablement créer 
+faire un fichier .env a la racine du projet pour cacher cette adresse
+
+création des tables de la bdd qui s'appellent ici des models
+dossier models -> fichier costume.routes.js
+
+faire les controllers pour interagir 
+
+dossier controllers -> fichier costume.controller.js
+
+ if (!req.body.message) {
+        res.status(400).json({ message: "Merci d'ajouter les infos" });
+      }
