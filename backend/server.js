@@ -14,6 +14,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use("/costume", require("./routes/costume.routes"));
+app.use("/gallerie", require("./routes/gallerie.routes"));
+app.use("/user", require("./routes/user.routes"));
 
 //lancer le serveur
 app.listen(port, () => console.log("serveur démarré : port" + port));
