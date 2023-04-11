@@ -4,10 +4,12 @@ const {
   getCostumes,
   editCostume,
   deleteCostume,
+  getCostumeByTitle,
 } = require("../controllers/costume.controller");
 const router = express.Router();
 
 router.get("/", getCostumes);
+router.get("/:titre", getCostumeByTitle);
 
 router.post("/", setCostumes);
 

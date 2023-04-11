@@ -6,6 +6,14 @@ module.exports.getCostumes = async (req, res) => {
   res.status(200).json(costumes);
 };
 
+module.exports.getCostumeByTitle = async (req, res) => {
+  const { titre } = req.query;
+  const costume = await CostumeModel.findOne({ titre });
+  if (!costume) {
+    return res.status(404).json({ message: "ce costume n'existe pas" });
+  }
+  return res.status(200).json(costume);
+};
 //controller pour créer un costume
 module.exports.setCostumes = async (req, res) => {
   const costume = await CostumeModel.create({
