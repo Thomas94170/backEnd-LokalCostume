@@ -7,7 +7,7 @@ module.exports.getCostumes = async (req, res) => {
 };
 
 module.exports.getCostumeByTitle = async (req, res) => {
-  const { titre } = req.query;
+  const { titre } = req.params;
   const costume = await CostumeModel.findOne({ titre });
   if (!costume) {
     return res.status(404).json({ message: "ce costume n'existe pas" });

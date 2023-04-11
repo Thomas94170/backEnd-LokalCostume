@@ -2,7 +2,7 @@ const express = require("express");
 const connectDB = require("./config/db");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
-const port = 5500;
+const port = 5400;
 
 //connxion a la bdd
 connectDB();
