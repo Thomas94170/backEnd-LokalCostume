@@ -134,3 +134,100 @@ export async function getCostumeByTitle(titre) {
   return data;
 }
 
+
+
+
+
+import axios from "axios";
+
+export async function getAllCostumeTitles() {
+  const response = await axios.get("http://localhost:5400/costume");
+  const data = response.data.map((costume) => costume.titre);
+  console.log(data);
+  return data;
+}
+
+export async function getCostumeByTitle(titre) {
+  const response = await axios.get(
+    `http://localhost:5400/costume?titre=${encodeURIComponent(titre)}`
+  );
+  const data = response.data;
+  console.log(data);
+  return data;
+}
+
+
+
+
+
+import Loading from "@/components/loading";
+import { useRouter } from "next/router";
+import { getAllCostumeTitles, getCostumeByTitle } from "../api/api";
+
+function Product({ costume }) {
+  const router = useRouter();
+
+  if (router.isFallback) {
+    return <Loading/>;
+  }
+
+  if(!costume){
+    return <p>Costume introuvable</p>
+  }
+
+  return (
+    <div>
+      <h1>{costume.titre}</h1>
+      <p>{costume.description}</p>
+      <img src={costume.image} alt={costume.titre} />
+      <p>{costume.prix} €/jour</p>
+    </div>
+  );
+}
+
+export async function getStaticProps({ params }) {
+  const costume = await getCostumeByTitle(params.titre);
+
+  return {
+    props: {
+      costume,
+    },
+  };
+}
+
+export async function getStaticPaths() {
+  const costumes = await getAllCostumeTitles();
+  const paths = costumes.map((title) => ({ params: { titre: title } }));
+
+  return { paths, fallback: true };
+}
+
+export default Product;
+
+
+
+interface CartProps {
+  count: number;
+}
+
+export default function Cart({ count }: CartProps) {
+  return (
+    <div className="flex items-center">
+      <FontAwesomeIcon icon={ faShoppingCart } />
+      <span>{count}</span>
+    </div>
+  );
+}
+
+
+const handleAddToCart = () => {
+    if (clickCount < 3) {
+      setCartItems([...cartItems, costume]);
+      setClickCount((prevClickCount) => prevClickCount + 1);
+      //setClickCount(clickCount + 1);
+      setErrorMessage("");
+      
+    } else {
+      setErrorMessage("Le produit n'est disponible qu'en 3 exemplaires.");
+    }
+  };

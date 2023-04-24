@@ -6,7 +6,20 @@ module.exports.getUsers = async (req, res) => {
   res.status(200).json(users);
 };
 
-//controller pour créer un costume
+//controller pour verifier les informations lors de la connexion à mon compte
+module.exports.checkCredentials = async (req, res) => {
+  const { email, mdp } = req.body;
+
+  const user = await UserModel.findOne({ email, mdp });
+
+  if (!user) {
+    res.status(400).json({ message: "Email ou mot de passe invalide" });
+  } else {
+    res.status(200).json({ message: "Connexion réussie" });
+  }
+};
+
+//controller pour créer un user
 module.exports.setUsers = async (req, res) => {
   const user = await UserModel.create({
     prenom: req.body.prenom,
@@ -25,9 +38,14 @@ module.exports.editUser = async (req, res) => {
     res.status(400).json({ message: "Ce compte n'existe pas" });
   }
 
-  const updateUser = await UserModel.findByIdAndUpdate(user, req.body, {
-    new: true,
-  });
+  const updateUser = await UserModel.findByIdAndUpdate(
+    req.params.id,
+    req.body,
+    {
+      new: true,
+    }
+  );
+
   res.status(200).json(updateUser);
 };
 
