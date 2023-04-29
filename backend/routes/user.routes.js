@@ -5,6 +5,7 @@ const {
   editUser,
   deleteUser,
   checkCredentials,
+  getUserInfo,
 } = require("../controllers/user.controller");
 const router = express.Router();
 
@@ -13,6 +14,8 @@ router.get("/", getUsers);
 router.post("/", setUsers);
 
 router.post("/user", checkCredentials);
+
+router.post("/getUserInfo", getUserInfo);
 
 router.put("/:id", editUser);
 

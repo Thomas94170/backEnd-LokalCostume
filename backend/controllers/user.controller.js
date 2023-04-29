@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const UserModel = require("../models/user.model");
 
 //controller pour afficher les infos de la bdd
@@ -11,12 +13,55 @@ module.exports.checkCredentials = async (req, res) => {
   const { email, mdp } = req.body;
 
   const user = await UserModel.findOne({ email, mdp });
-
+  // cryptage du mot de passe avec bcrypt
+  // également générer un token jwt
   if (!user) {
     res.status(400).json({ message: "Email ou mot de passe invalide" });
-  } else {
-    res.status(200).json({ message: "Connexion réussie" });
   }
+  // Vérification du mot de passe avec bcrypt
+  const isPasswordValid = await bcrypt.compare(mdp, user.mdp);
+  if (!isPasswordValid) {
+    return res.status(400).json({ message: "Email ou mot de passe invalide" });
+  }
+
+  // Génération du token JWT
+  const token = jwt.sign({ userId: user._id }, "clé secrète du token", {
+    expiresIn: "1h",
+  });
+  res.status(200).json({ message: "Connexion réussie", token });
+};
+
+//controller pour récupérer les infos (toute les infos) du user connecté grâce au token
+// si le user existe j'envoi le token généré coté front end
+module.exports.getUserInfo = async (req, res) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res
+      .status(401)
+      .json({ message: "Pas de token d'authentification fourni" });
+  }
+  console.log(res);
+  console.log(req);
+
+  const token = authHeader.split(" ")[1];
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(token, "clé secrète du token");
+  } catch (error) {
+    return res
+      .status(401)
+      .json({ message: "Token d'authentification invalide" });
+  }
+
+  const userId = decodedToken.userId;
+  const user = await UserModel.findById(userId);
+  if (!user) {
+    return res.status(404).json({ message: "Utilisateur introuvable" });
+  }
+  console.log(res);
+
+  const { id, prenom, nom, email, mdp } = user;
+  res.status(200).json({ id, prenom, nom, email, mdp, token });
 };
 
 //controller pour créer un user
