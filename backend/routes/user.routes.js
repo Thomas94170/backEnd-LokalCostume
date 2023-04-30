@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.get("/", getUsers);
 
-router.post("/", setUsers);
+router.post("/setUsers", setUsers);
 
 router.post("/user", checkCredentials);
 

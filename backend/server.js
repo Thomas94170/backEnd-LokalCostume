@@ -4,7 +4,7 @@ const dotenv = require("dotenv").config();
 const cors = require("cors");
 const port = 5400;
 
-//connxion a la bdd
+//connxion a la bdd!
 connectDB();
 
 const app = express();

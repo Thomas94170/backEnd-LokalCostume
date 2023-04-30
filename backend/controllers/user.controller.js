@@ -8,19 +8,23 @@ module.exports.getUsers = async (req, res) => {
   res.status(200).json(users);
 };
 
-//controller pour verifier les informations lors de la connexion à mon compte
+//controller pour verifier les informations lors de la connexion à mon compte!
 module.exports.checkCredentials = async (req, res) => {
+  console.log("checkCredentials");
   const { email, mdp } = req.body;
 
-  const user = await UserModel.findOne({ email, mdp });
+  const user = await UserModel.findOne({ email: email });
+  console.log("route checkCredential appelé");
   // cryptage du mot de passe avec bcrypt
   // également générer un token jwt
   if (!user) {
     res.status(400).json({ message: "Email ou mot de passe invalide" });
+    console.log(res + res.status(400) + "erreur ligne 20");
   }
   // Vérification du mot de passe avec bcrypt
   const isPasswordValid = await bcrypt.compare(mdp, user.mdp);
   if (!isPasswordValid) {
+    console.log(res + res.status(400) + "erreur ligne26");
     return res.status(400).json({ message: "Email ou mot de passe invalide" });
   }
 
@@ -28,17 +32,22 @@ module.exports.checkCredentials = async (req, res) => {
   const token = jwt.sign({ userId: user._id }, "clé secrète du token", {
     expiresIn: "1h",
   });
+
   console.log(token);
+
   res.status(200).json({
     message: "Connexion réussie",
     token: token,
     user: { email: user.email },
   });
+  console.log(res + res.status(200) + "réussi");
+  console.log(token);
 };
 
 //controller pour récupérer les infos (toute les infos) du user connecté grâce au token
 // si le user existe j'envoi le token généré coté front end
 module.exports.getUserInfo = async (req, res) => {
+  console.log("getUserInfo");
   const authHeader = req.headers.authorization;
   if (!authHeader) {
     return res
@@ -71,6 +80,7 @@ module.exports.getUserInfo = async (req, res) => {
 
 //controller pour créer un user
 module.exports.setUsers = async (req, res) => {
+  console.log("setUser");
   const user = await UserModel.create({
     prenom: req.body.prenom,
     nom: req.body.nom,
@@ -78,6 +88,7 @@ module.exports.setUsers = async (req, res) => {
     mdp: req.body.mdp,
   });
   res.status(200).json(user);
+  console.log(res.status);
 };
 
 //controller pour modifier les infos
