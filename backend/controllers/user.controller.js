@@ -28,7 +28,12 @@ module.exports.checkCredentials = async (req, res) => {
   const token = jwt.sign({ userId: user._id }, "clé secrète du token", {
     expiresIn: "1h",
   });
-  res.status(200).json({ message: "Connexion réussie", token });
+  console.log(token);
+  res.status(200).json({
+    message: "Connexion réussie",
+    token: token,
+    user: { email: user.email },
+  });
 };
 
 //controller pour récupérer les infos (toute les infos) du user connecté grâce au token
@@ -60,8 +65,8 @@ module.exports.getUserInfo = async (req, res) => {
   }
   console.log(res);
 
-  const { id, prenom, nom, email, mdp } = user;
-  res.status(200).json({ id, prenom, nom, email, mdp, token });
+  const { id, prenom, nom, email } = user;
+  res.status(200).json({ id, prenom, nom, email, token });
 };
 
 //controller pour créer un user
