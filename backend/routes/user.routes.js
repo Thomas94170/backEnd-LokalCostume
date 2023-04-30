@@ -13,7 +13,7 @@ router.get("/", getUsers);
 
 router.post("/setUsers", setUsers);
 
-router.post("/user", checkCredentials);
+router.post("/checkCredentials", checkCredentials);
 
 router.post("/getUserInfo", getUserInfo);
 

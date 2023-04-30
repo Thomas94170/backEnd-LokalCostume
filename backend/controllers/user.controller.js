@@ -14,7 +14,7 @@ module.exports.checkCredentials = async (req, res) => {
   const { email, mdp } = req.body;
 
   const user = await UserModel.findOne({ email: email });
-  console.log("route checkCredential appelé");
+  console.log(user);
   // cryptage du mot de passe avec bcrypt
   // également générer un token jwt
   if (!user) {
