@@ -8,7 +8,10 @@ const port = 5400;
 connectDB();
 
 const app = express();
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:3000",
+};
+app.use(cors(corsOptions));
 //middleware permettant de traiter les données de la request
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

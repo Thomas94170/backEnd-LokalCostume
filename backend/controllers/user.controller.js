@@ -24,12 +24,13 @@ module.exports.checkCredentials = async (req, res) => {
   // Vérification du mot de passe avec bcrypt
   const isPasswordValid = await bcrypt.compare(mdp, user.mdp);
   if (!isPasswordValid) {
+    console.log(isPasswordValid);
     console.log(res + res.status(400) + "erreur ligne26");
     return res.status(400).json({ message: "Email ou mot de passe invalide" });
   }
 
   // Génération du token JWT
-  const token = jwt.sign({ userId: user._id }, "clé secrète du token", {
+  const token = jwt.sign({ userEmail: user.email }, "clé secrète du token", {
     expiresIn: "1h",
   });
 
@@ -67,8 +68,8 @@ module.exports.getUserInfo = async (req, res) => {
       .json({ message: "Token d'authentification invalide" });
   }
 
-  const userId = decodedToken.userId;
-  const user = await UserModel.findById(userId);
+  const userEmail = decodedToken.email;
+  const user = await UserModel.findOne({ email: userEmail });
   if (!user) {
     return res.status(404).json({ message: "Utilisateur introuvable" });
   }
@@ -81,11 +82,12 @@ module.exports.getUserInfo = async (req, res) => {
 //controller pour créer un user
 module.exports.setUsers = async (req, res) => {
   console.log("setUser");
+  const hashedPassword = await bcrypt.hash(req.body.mdp, 10);
   const user = await UserModel.create({
     prenom: req.body.prenom,
     nom: req.body.nom,
     email: req.body.email,
-    mdp: req.body.mdp,
+    mdp: hashedPassword,
   });
   res.status(200).json(user);
   console.log(res.status);
