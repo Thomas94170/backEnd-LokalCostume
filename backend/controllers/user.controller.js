@@ -13,7 +13,9 @@ module.exports.checkCredentials = async (req, res) => {
   console.log("checkCredentials");
   const { email, mdp } = req.body;
 
-  const user = await UserModel.findOne({ email: email });
+  const user = await UserModel.findOne({
+    email: email,
+  });
   console.log(user);
   // cryptage du mot de passe avec bcrypt
   // également générer un token jwt
@@ -28,21 +30,23 @@ module.exports.checkCredentials = async (req, res) => {
     console.log(res + res.status(400) + "erreur ligne26");
     return res.status(400).json({ message: "Email ou mot de passe invalide" });
   }
-
   // Génération du token JWT
-  const token = jwt.sign({ userEmail: user.email }, "clé secrète du token", {
+  const token = jwt.sign({ email: user.email }, "clé secrète du token", {
     expiresIn: "1h",
   });
-
   console.log(token);
-
+  res.setHeader("Authorization", `Bearer ${token}`);
   res.status(200).json({
     message: "Connexion réussie",
-    token: token,
-    user: { email: user.email },
+    user: {
+      id: user.id,
+      prenom: user.prenom,
+      nom: user.nom,
+      email: user.email,
+    },
+    token: token, // ajout du token dans la réponse pour le récupérer côté front-end
   });
   console.log(res + res.status(200) + "réussi");
-  console.log(token);
 };
 
 //controller pour récupérer les infos (toute les infos) du user connecté grâce au token
@@ -50,10 +54,11 @@ module.exports.checkCredentials = async (req, res) => {
 module.exports.getUserInfo = async (req, res) => {
   console.log("getUserInfo");
   const authHeader = req.headers.authorization;
+
   if (!authHeader) {
-    return res
-      .status(401)
-      .json({ message: "Pas de token d'authentification fourni" });
+    return res.status(401).json({
+      message: "Pas de token d'authentification fourni : " + authHeader,
+    });
   }
   console.log(res);
   console.log(req);
@@ -70,6 +75,7 @@ module.exports.getUserInfo = async (req, res) => {
 
   const userEmail = decodedToken.email;
   const user = await UserModel.findOne({ email: userEmail });
+  console.log(user);
   if (!user) {
     return res.status(404).json({ message: "Utilisateur introuvable" });
   }

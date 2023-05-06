@@ -10,6 +10,9 @@ connectDB();
 const app = express();
 const corsOptions = {
   origin: "http://localhost:3000",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  exposedHeaders: ["Authorization"],
 };
 app.use(cors(corsOptions));
 //middleware permettant de traiter les données de la request
