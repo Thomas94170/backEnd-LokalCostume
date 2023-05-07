@@ -53,6 +53,7 @@ module.exports.checkCredentials = async (req, res) => {
 // si le user existe j'envoi le token généré coté front end
 module.exports.getUserInfo = async (req, res) => {
   console.log("getUserInfo");
+  console.log(req);
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {

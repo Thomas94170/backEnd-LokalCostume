@@ -17,7 +17,7 @@ router.post("/checkCredentials", checkCredentials);
 
 router.post("/getUserInfo", getUserInfo);
 
-router.put("/:id", editUser);
+router.patch("/:id", editUser);
 
 router.delete("/:id", deleteUser);
 
