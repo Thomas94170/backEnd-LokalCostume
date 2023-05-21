@@ -115,7 +115,7 @@ module.exports.editUser = async (req, res) => {
       new: true,
     }
   );
-
+  console.log(req);
   res.status(200).json(updateUser);
 };
 
