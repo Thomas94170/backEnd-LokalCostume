@@ -8,8 +8,8 @@ const router = express.Router();
 
 router.get("/", getOrders);
 
-router.get("/byId", getOrderById);
+router.get("/:userId", getOrderById);
 
-router.post("/setUsers", setOrders);
+router.post("/setOrders", setOrders);
 
 module.exports = router;

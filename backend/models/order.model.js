@@ -15,11 +15,23 @@ const orderSchema = new mongoose.Schema({
     type: Date,
     require: true,
   },
+  prix: {
+    type: String,
+    require: true,
+  },
+  descriptif: {
+    type: String,
+    require: true,
+  },
 });
 
 //def de la méthode de recherche dans la méthode schéma
-orderSchema.statics.findOneById = function (id) {
-  return this.findOne({ _id: id });
+orderSchema.statics.findOneByUserId = function (userId) {
+  console.log("Searching for order with userId:", userId);
+  return this.findOne({ userId: userId }).then((order) => {
+    console.log("Found order:", order);
+    return order;
+  });
 };
 
 const Order = mongoose.model("Order", orderSchema);
