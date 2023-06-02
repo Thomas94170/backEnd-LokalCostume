@@ -4,7 +4,7 @@ require("dotenv").config();
 
 const router = express.Router();
 
-const mailchimp = new Mailchimp("a02edeb3b301796ab4e8d637f3f39808-us21");
+const mailchimp = new Mailchimp(process.env.MAILCHIMP_API_KEY);
 
 // Route pour récupérer les abonnés
 router.get("/api/subscribers", async (req, res) => {
