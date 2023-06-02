@@ -2,6 +2,7 @@ const express = require("express");
 const connectDB = require("./config/db");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
+const mailchimpRoutes = require("../newsletter/mailchimp");
 const port = 5400;
 
 //connxion a la bdd!
@@ -25,6 +26,8 @@ app.use("/costume", require("./routes/costume.routes"));
 app.use("/gallerie", require("./routes/gallerie.routes"));
 app.use("/user", require("./routes/user.routes"));
 app.use("/order", require("./routes/order.routes"));
+app.use("/mail", require("../backend/mailer/mailer.js"));
+app.use("/mailchimp", mailchimpRoutes);
 
 app.use((err, req, res, next) => {
   if (err.name === "UnauthorizedError") {
