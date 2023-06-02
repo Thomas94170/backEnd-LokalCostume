@@ -1,5 +1,6 @@
 const Mailchimp = require("mailchimp-api-v3");
 const express = require("express");
+require("dotenv").config();
 
 const router = express.Router();
 
@@ -9,7 +10,9 @@ const mailchimp = new Mailchimp("a02edeb3b301796ab4e8d637f3f39808-us21");
 router.get("/api/subscribers", async (req, res) => {
   try {
     // Récupérez la liste des abonnés depuis MailChimp
-    const response = await mailchimp.get("/lists/a59b2f4525/members");
+    const response = await mailchimp.get(
+      `/lists/${process.env.MAILCHIMP_LIST_ID}/members`
+    );
 
     console.log("Abonnés récupérés avec succès :", response);
 
@@ -31,10 +34,13 @@ router.post("/api/subscribe", async (req, res) => {
 
   try {
     // Ajoutez l'abonné à votre liste MailChimp
-    const response = await mailchimp.post("/lists/a59b2f4525/members", {
-      email_address: email,
-      status: "subscribed",
-    });
+    const response = await mailchimp.post(
+      `/lists/${process.env.MAILCHIMP_LIST_ID}/members`,
+      {
+        email_address: email,
+        status: "subscribed",
+      }
+    );
 
     console.log("Abonné ajouté avec succès :", response);
 
