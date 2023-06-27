@@ -10,12 +10,15 @@ connectDB();
 
 const app = express();
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "http://localhost:3001"],
   methods: ["GET", "POST", "PATCH", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"],
   exposedHeaders: ["Authorization"],
   credentials: true,
+  preflightContinue: false,
 };
+
+app.options("*", cors(corsOptions));
 
 app.use(cors(corsOptions));
 //middleware permettant de traiter les données de la request
@@ -27,6 +30,7 @@ app.use("/gallerie", require("./routes/gallerie.routes"));
 app.use("/user", require("./routes/user.routes"));
 app.use("/order", require("./routes/order.routes"));
 app.use("/mail", require("../backend/mailer/mailer.js"));
+app.use("/admin", require("./routes/admin.routes"));
 app.use("/mailchimp", mailchimpRoutes);
 
 app.use((err, req, res, next) => {

@@ -43,13 +43,17 @@ module.exports.editCostume = async (req, res) => {
 };
 
 module.exports.deleteCostume = async (req, res) => {
-  const costume = await CostumeModel.findByIdAndDelete(req.params.id);
+  console.log("function deletecostume appelée");
+  const { id } = req.params;
+  console.log("numéro id de l'élément supprimé " + id);
+  const costume = await CostumeModel.deleteOne({ _id: id });
+  console.log("costume" + costume);
   if (!costume) {
+    console.log("erreur ici" + res + " " + req);
     return res.status(404).json({ error: "Costume introuvable" });
   }
   try {
-    await costume.remove();
-    res.status(200).json("Costume supprimé" + req.params.id);
+    res.status(200).json({ message: "Costume supprimé ", params: req.params });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

@@ -34,8 +34,14 @@ module.exports.checkCredentials = async (req, res) => {
   const token = jwt.sign({ email: user.email }, "clé secrète du token", {
     expiresIn: "1h",
   });
-  console.log(token);
-  res.setHeader("Authorization", `Bearer ${token}`);
+  console.log("le token est ici   " + token + "   stop ici!");
+
+  // Concaténer le token avec l'identifiant de session
+  const dynamicSecret = token;
+
+  console.log(dynamicSecret);
+
+  res.setHeader("Authorization", `Bearer ${dynamicSecret}`);
   res.status(200).json({
     message: "Connexion réussie",
     user: {
@@ -44,7 +50,7 @@ module.exports.checkCredentials = async (req, res) => {
       nom: user.nom,
       email: user.email,
     },
-    token: token, // ajout du token dans la réponse pour le récupérer côté front-end
+    token: dynamicSecret, // ajout du token dans la réponse pour le récupérer côté front-end
   });
   console.log(res + res.status(200) + "réussi");
 };
@@ -83,6 +89,7 @@ module.exports.getUserInfo = async (req, res) => {
   console.log(res);
 
   const { id, prenom, nom, email } = user;
+
   res.status(200).json({ id, prenom, nom, email, token });
 };
 

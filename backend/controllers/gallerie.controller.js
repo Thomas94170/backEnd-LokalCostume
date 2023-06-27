@@ -31,12 +31,14 @@ module.exports.editGallerie = async (req, res) => {
 };
 
 module.exports.deleteGallerie = async (req, res) => {
-  const gallerie = await GallerieModel.findByIdAndDelete(req.params.id);
+  const { id } = req.params;
+  // eslint-disable-next-line no-undef
+  const gallerie = await GallerieModel.deleteOne({ _id: id });
   if (!gallerie) {
     return res.status(404).json({ error: "Image introuvable" });
   }
   try {
-    await gallerie.remove();
+    // await gallerie.remove();
     res.status(200).json("Image supprimé" + req.params.id);
   } catch (err) {
     res.status(500).json({ error: err.message });
