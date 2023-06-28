@@ -15,6 +15,6 @@ router.post("/", setCostumes);
 
 router.put("/:id", editCostume);
 
-router.delete("/:id", deleteCostume);
+router.delete("/:titre", deleteCostume);
 
 module.exports = router;
