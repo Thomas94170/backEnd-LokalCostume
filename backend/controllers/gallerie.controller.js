@@ -9,6 +9,28 @@ module.exports.getGalleries = async (req, res) => {
   res.status(200).json(galleries);
 };
 
+//affichage selon id de l'image
+
+module.exports.getGallerieById = async (req, res) => {
+  try {
+    const gallerieId = req.params.id; // Récupère l'ID de la galerie depuis les paramètres de la requête
+    const gallerie = await GallerieModel.findById(gallerieId);
+
+    if (!gallerie) {
+      return res.status(404).json({ message: "Galerie non trouvée" });
+    }
+
+    res.status(200).json(gallerie);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({
+        message: "Erreur serveur lors de la récupération de la galerie",
+      });
+  }
+};
+
 // Configuration de Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {

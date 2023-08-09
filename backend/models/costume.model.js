@@ -11,11 +11,11 @@ const costumeSchema = mongoose.Schema({
   },
   imageUne: {
     type: String,
-    require: true,
+    require: false,
   },
   imageDeux: {
     type: String,
-    require: true,
+    require: false,
   },
   prix: {
     type: String,

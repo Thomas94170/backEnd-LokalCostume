@@ -61,7 +61,7 @@ module.exports.getUserInfo = async (req, res) => {
   console.log("getUserInfo");
   console.log(req);
   const authHeader = req.headers.authorization;
-
+  console.log(" l'en tête est ici : " + authHeader + " stop ici");
   if (!authHeader) {
     return res.status(401).json({
       message: "Pas de token d'authentification fourni : " + authHeader,

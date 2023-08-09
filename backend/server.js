@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const connectDB = require("./config/db");
 const dotenv = require("dotenv").config();
 const cors = require("cors");
@@ -24,6 +25,9 @@ app.use(cors(corsOptions));
 //middleware permettant de traiter les données de la request
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
 app.use("/costume", require("./routes/costume.routes"));
 app.use("/gallerie", require("./routes/gallerie.routes"));
