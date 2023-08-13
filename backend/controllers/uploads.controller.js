@@ -3,32 +3,6 @@ const path = require("path");
 
 const GallerieModel = require("../models/gallerie.model");
 
-//controller pour afficher les infos de la bdd
-module.exports.getGalleries = async (req, res) => {
-  const galleries = await GallerieModel.find();
-  res.status(200).json(galleries);
-};
-
-//affichage selon id de l'image
-
-module.exports.getGallerieById = async (req, res) => {
-  try {
-    const gallerieId = req.params._id; // Récupère l'ID de la galerie depuis les paramètres de la requête
-    const gallerie = await GallerieModel.findById(gallerieId);
-
-    if (!gallerie) {
-      return res.status(404).json({ message: "Galerie non trouvée" });
-    }
-
-    res.status(200).json(gallerie);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Erreur serveur lors de la récupération de la galerie",
-    });
-  }
-};
-
 // Configuration de Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -43,10 +17,8 @@ const storage = multer.diskStorage({
 // Créez une instance de multer avec la configuration
 const upload = multer({ storage: storage });
 
-//controller pour créer une image
-
-module.exports.setGalleries = async (req, res) => {
-  console.log("function setGalleries appelée");
+module.exports.setUploads = async (req, res) => {
+  console.log("function setUploads appelée");
   try {
     // Utilisez le middleware de téléchargement Multer pour gérer le fichier téléchargé
     upload.single("imageGallerie")(req, res, async function (err) {
@@ -73,23 +45,32 @@ module.exports.setGalleries = async (req, res) => {
   }
 };
 
-//controller pour modifier les infos
-module.exports.editGallerie = async (req, res) => {
-  const gallerie = await GallerieModel.findById(req.params.id);
-
-  if (!gallerie) {
-    res.status(400).json({ message: "Cette image n'existe pas" });
-  }
-
-  const updateGallerie = await GallerieModel.findByIdAndUpdate(
-    gallerie,
-    req.body,
-    { new: true }
-  );
-  res.status(200).json(updateGallerie);
+//controller pour afficher les infos de la bdd
+module.exports.getUploads = async (req, res) => {
+  const galleries = await GallerieModel.find();
+  res.status(200).json(galleries);
 };
 
-module.exports.deleteGallerie = async (req, res) => {
+module.exports.getUploadsById = async (req, res) => {
+  try {
+    const gallerieId = req.params.id; // Récupère l'ID de la galerie depuis les paramètres de la requête
+    const gallerie = await GallerieModel.findById(gallerieId);
+
+    if (!gallerie) {
+      return res.status(404).json({ message: "Image non trouvée" });
+    }
+
+    res.status(200).json(gallerie);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Erreur serveur lors de la récupération de l image",
+    });
+  }
+};
+
+//suppression de l'uploads
+module.exports.deleteUploads = async (req, res) => {
   const { id } = req.params;
   // eslint-disable-next-line no-undef
   const gallerie = await GallerieModel.deleteOne({ _id: id });

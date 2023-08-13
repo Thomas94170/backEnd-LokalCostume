@@ -1,4 +1,17 @@
+const multer = require("multer");
 const CostumeModel = require("../models/costume.model");
+
+// Configuration de multer pour gérer l'upload des images
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "/uploads");
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 //controller pour afficher les infos de la bdd
 module.exports.getCostumes = async (req, res) => {
@@ -14,7 +27,8 @@ module.exports.getCostumeByTitle = async (req, res) => {
   }
   return res.status(200).json(costume);
 };
-//controller pour créer un costume
+
+// Contrôleur pour créer un costume
 module.exports.setCostumes = async (req, res) => {
   const costume = await CostumeModel.create({
     titre: req.body.titre,
