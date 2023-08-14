@@ -7,4 +7,4 @@ const gallerieSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("gallerie", gallerieSchema);
+module.exports = mongoose.model("uploads", gallerieSchema);
