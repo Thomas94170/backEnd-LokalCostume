@@ -1,7 +1,4 @@
 const express = require("express");
-//const multer = require('multer');
-
-//const upload = multer({dest: "uploads"})
 
 const {
   setUploads,
@@ -13,10 +10,10 @@ const router = express.Router();
 
 router.get("/", getUploads);
 
-router.get("/:id", getUploadsById);
+router.get("/:_id", getUploadsById);
 
 router.post("/", setUploads);
 
-router.delete("/:id", deleteUploads);
+router.delete("/:_id", deleteUploads);
 
 module.exports = router;

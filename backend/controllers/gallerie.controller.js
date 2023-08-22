@@ -5,26 +5,43 @@ const GallerieModel = require("../models/gallerie.model");
 
 //controller pour afficher les infos de la bdd
 module.exports.getGalleries = async (req, res) => {
-  const galleries = await GallerieModel.find();
-  res.status(200).json(galleries);
+  // const galleries = await GallerieModel.find();
+  // res.status(200).json(galleries);
+  console.log("getGalleriess appelée");
+  try {
+    const galleries = await GallerieModel.find();
+
+    const imagesList = galleries.map((gallery) => ({
+      url: `http://localhost:5400/uploads/${gallery.imageGallerie}`,
+    }));
+
+    res.status(200).json(imagesList);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Erreur serveur lors de la récupération des images!",
+    });
+  }
 };
 
 //affichage selon id de l'image
 
 module.exports.getGallerieById = async (req, res) => {
+  console.log("getGallerieById appelée");
   try {
     const gallerieId = req.params._id; // Récupère l'ID de la galerie depuis les paramètres de la requête
     const gallerie = await GallerieModel.findById(gallerieId);
+    // const gallerie = await GallerieModel.findOne({ imageGallerie: gallerieId });
 
     if (!gallerie) {
-      return res.status(404).json({ message: "Galerie non trouvée" });
+      return res.status(404).json({ message: "Image non trouvée" });
     }
 
     res.status(200).json(gallerie);
   } catch (error) {
-    console.error(error);
+    console.error(error + "voici le message");
     res.status(500).json({
-      message: "Erreur serveur lors de la récupération de la galerie",
+      message: "Erreur serveur lors de la récupération de l image!!!",
     });
   }
 };
@@ -32,7 +49,7 @@ module.exports.getGallerieById = async (req, res) => {
 // Configuration de Multer
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/"); // Spécifiez le dossier où vous souhaitez enregistrer les fichiers téléchargés
+    cb(null, "public/uploads/"); // Spécifiez le dossier où vous souhaitez enregistrer les fichiers téléchargés
   },
   filename: function (req, file, cb) {
     const extname = path.extname(file.originalname);
@@ -41,7 +58,20 @@ const storage = multer.diskStorage({
 });
 
 // Créez une instance de multer avec la configuration
-const upload = multer({ storage: storage });
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/png"
+  ) {
+    cb(null, true); // Accepter le fichier
+  } else {
+    cb(new Error("Format d'image non supporté"), false); // Refuser le fichier
+  }
+};
+
+// Créez une instance de multer avec la configuration
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 //controller pour créer une image
 

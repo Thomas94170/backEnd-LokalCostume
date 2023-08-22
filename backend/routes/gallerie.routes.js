@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get("/", getGalleries);
 
-router.get("/:id", getGallerieById);
+router.get("/:_id", getGallerieById);
 
 router.post("/", setGalleries);
 
