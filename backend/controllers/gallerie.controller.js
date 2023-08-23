@@ -1,5 +1,6 @@
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
 
 const GallerieModel = require("../models/gallerie.model");
 
@@ -119,17 +120,43 @@ module.exports.editGallerie = async (req, res) => {
   res.status(200).json(updateGallerie);
 };
 
+//module.exports.deleteGallerie = async (req, res) => {
+//  console.log("fntion deleteGallerie appelée");
+//  const { imageGallerie } = req.params;
+// eslint-disable-next-line no-undef
+//  const gallerie = await GallerieModel.deleteOne({
+//    imageGallerie: imageGallerie,
+//  });
+//  if (!gallerie) {
+//    return res.status(404).json({ error: "Image introuvable" });
+//  }
+//  try {
+//await gallerie.remove();
+//    res.status(200).json("Image supprimé" + req.params.imageGallerie);
+//  } catch (err) {
+//    res.status(500).json({ error: err.message });
+//  }
+//};
+
 module.exports.deleteGallerie = async (req, res) => {
-  const { id } = req.params;
-  // eslint-disable-next-line no-undef
-  const gallerie = await GallerieModel.deleteOne({ _id: id });
-  if (!gallerie) {
-    return res.status(404).json({ error: "Image introuvable" });
-  }
+  console.log("Fonction deleteGallerie appelée");
+  const { imageGallerie } = req.params;
+
   try {
-    // await gallerie.remove();
-    res.status(200).json("Image supprimé" + req.params.id);
+    // Obtenez le chemin complet du fichier à partir de la base de données
+    const filePath = path.join("public/uploads", imageGallerie);
+
+    // Vérifiez si le fichier existe avant de le supprimer
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath); // Supprimer le fichier du système de fichiers
+    }
+
+    // Maintenant, vous pouvez supprimer le document de la base de données
+    await GallerieModel.deleteOne({ imageGallerie: imageGallerie });
+
+    res.status(200).json("Image supprimée " + imageGallerie);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: err.message });
   }
 };

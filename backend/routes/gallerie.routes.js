@@ -16,6 +16,6 @@ router.post("/", setGalleries);
 
 router.put("/:id", editGallerie);
 
-router.delete("/:id", deleteGallerie);
+router.delete("/:imageGallerie", deleteGallerie);
 
 module.exports = router;

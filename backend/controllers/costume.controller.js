@@ -1,17 +1,33 @@
 const multer = require("multer");
+const path = require("path");
+const fs = require("fs");
 const CostumeModel = require("../models/costume.model");
 
 // Configuration de multer pour gérer l'upload des images
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "/uploads");
+    cb(null, "./public/uploads");
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname);
   },
 });
 
-const upload = multer({ storage: storage });
+// Créez une instance de multer avec la configuration
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/jpeg" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/png"
+  ) {
+    cb(null, true); // Accepter le fichier
+  } else {
+    cb(new Error("Format d'image non supporté"), false); // Refuser le fichier
+  }
+};
+
+// Créez une instance de multer avec la configuration
+const upload = multer({ storage: storage, fileFilter: fileFilter });
 
 //controller pour afficher les infos de la bdd
 module.exports.getCostumes = async (req, res) => {
@@ -29,15 +45,46 @@ module.exports.getCostumeByTitle = async (req, res) => {
 };
 
 // Contrôleur pour créer un costume
+// module.exports.setCostumes = async (req, res) => {
+// const costume = await CostumeModel.create({
+// titre: req.body.titre,
+// description: req.body.description,
+// imageUne: req.body.imageUne,
+// imageDeux: req.body.imageDeux,
+// prix: req.body.prix,
+// });
+// res.status(200).json(costume);
+// };
+
 module.exports.setCostumes = async (req, res) => {
-  const costume = await CostumeModel.create({
-    titre: req.body.titre,
-    description: req.body.description,
-    imageUne: req.body.imageUne,
-    imageDeux: req.body.imageDeux,
-    prix: req.body.prix,
-  });
-  res.status(200).json(costume);
+  try {
+    // Utilisez l'upload Multer pour gérer les deux images
+    upload.fields([
+      { name: "imageUne", maxCount: 1 },
+      { name: "imageDeux", maxCount: 1 },
+    ])(req, res, async (err) => {
+      if (err instanceof multer.MulterError) {
+        // Gérer les erreurs de téléchargement Multer
+        return res.status(500).json({ error: err.message });
+      } else if (err) {
+        // Gérer les autres erreurs
+        return res.status(500).json({ error: err.message });
+      }
+
+      // Les fichiers ont été téléchargés avec succès, vous pouvez maintenant créer le costume
+      const costume = await CostumeModel.create({
+        titre: req.body.titre,
+        description: req.body.description,
+        imageUne: req.files["imageUne"][0].filename, // Utilisez req.files pour accéder aux fichiers téléchargés
+        imageDeux: req.files["imageDeux"][0].filename,
+        prix: req.body.prix,
+      });
+
+      res.status(200).json(costume);
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 };
 
 //controller pour modifier les infos
