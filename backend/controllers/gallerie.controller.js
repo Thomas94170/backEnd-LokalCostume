@@ -5,24 +5,32 @@ const fs = require("fs");
 const GallerieModel = require("../models/gallerie.model");
 
 //controller pour afficher les infos de la bdd
+// module.exports.getGalleries = async (req, res) => {
+//   console.log("getGalleriess appelée");
+//   try {
+//     console.log("je rentre dans le try");
+//     const galleries = await GallerieModel.find();
+//     console.log("find utiliséé");
+//     const imagesList = galleries.map((gallery) => ({
+//       url: `http://localhost:5400/uploads/${gallery.imageGallerie}`,
+//     }));
+
+//     res.status(200).json(imagesList);
+//     console.log("voici la liste : ");
+//     console.log(imagesList);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       message: "Erreur serveur lors de la récupération des images!",
+//     });
+//   }
+// };
+
 module.exports.getGalleries = async (req, res) => {
-  // const galleries = await GallerieModel.find();
-  // res.status(200).json(galleries);
-  console.log("getGalleriess appelée");
-  try {
-    const galleries = await GallerieModel.find();
-
-    const imagesList = galleries.map((gallery) => ({
-      url: `http://localhost:5400/uploads/${gallery.imageGallerie}`,
-    }));
-
-    res.status(200).json(imagesList);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Erreur serveur lors de la récupération des images!",
-    });
-  }
+  console.log("getGaleries appelée");
+  const galleries = await GallerieModel.find();
+  res.status(200).json(galleries);
+  console.log("function éxécutée");
 };
 
 //affichage selon id de l'image
@@ -144,17 +152,21 @@ module.exports.deleteGallerie = async (req, res) => {
 
   try {
     // Obtenez le chemin complet du fichier à partir de la base de données
-    const filePath = path.join("public/uploads", imageGallerie);
+    console.log("try ici");
+    const filePath = path.join("uploads", imageGallerie);
+    console.log(filePath);
 
     // Vérifiez si le fichier existe avant de le supprimer
     if (fs.existsSync(filePath)) {
       fs.unlinkSync(filePath); // Supprimer le fichier du système de fichiers
+      console.log("vérification ");
     }
 
     // Maintenant, vous pouvez supprimer le document de la base de données
     await GallerieModel.deleteOne({ imageGallerie: imageGallerie });
-
+    console.log("delete utilisé");
     res.status(200).json("Image supprimée " + imageGallerie);
+    console.log("image supprimé " + imageGallerie);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });

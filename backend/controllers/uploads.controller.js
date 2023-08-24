@@ -77,24 +77,30 @@ module.exports.setUploads = async (req, res) => {
 //  }
 //};
 
+// module.exports.getUploads = async (req, res) => {
+//   console.log("getUploads appelée");
+//   try {
+//     const galleries = await GallerieModel.find();
+
+//     const imagesList = galleries.map((gallery) => ({
+//       url: `http://localhost:5400/uploads/${gallery.imageGallerie}`,
+//     }));
+
+//     res.status(200).json(imagesList);
+//     console.log(imagesList);
+//     console.log("getUploads fonctionne");
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({
+//       message: "Erreur serveur lors de la récupération des images!",
+//     });
+//   }
+// };
 module.exports.getUploads = async (req, res) => {
   console.log("getUploads appelée");
-  try {
-    const galleries = await GallerieModel.find();
-
-    const imagesList = galleries.map((gallery) => ({
-      url: `http://localhost:5400/uploads/${gallery.imageGallerie}`,
-    }));
-
-    res.status(200).json(imagesList);
-    console.log(imagesList);
-    console.log("getUploads fonctionne");
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Erreur serveur lors de la récupération des images!",
-    });
-  }
+  const uploads = await GallerieModel.find();
+  res.status(200).json(uploads);
+  console.log("éxécutée et traitée");
 };
 
 module.exports.getUploadsById = async (req, res) => {
