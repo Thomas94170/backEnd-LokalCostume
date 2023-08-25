@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: true }));
 
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/public", express.static(path.join(__dirname, "../public")));
 
 app.use("/costume", require("./routes/costume.routes"));
 app.use("/gallerie", require("./routes/gallerie.routes"));
